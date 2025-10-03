@@ -19,6 +19,10 @@ editor: visual
 library(here)
 library(terra)
 library(sf)
+library(leaflet)
+library(mapview)
+library(dplyr)
+library(plotly)
 ```
 
 ## NDVI (Normalized Difference Vegetation Index)
@@ -86,4 +90,71 @@ ndvi <- (nir - red) / (nir + red)
 
 ```{r}
 plot(ndvi, main = "NDVI")
+```
+
+```{r}
+# Reduce resolution significantly (factor of 8-10 should work)
+ndvi_adv <- aggregate(ndvi, fact = 4, fun = mean)
+
+# Create custom breaks and colors
+breaks <- c(-1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 1)
+colors <- c("#4A90E2",      # Ocean (blue)
+           "#CD853F",       # Bare soil/urban (tan)
+           "#DEB887",       # Very sparse (light tan)
+           "#F0E68C",       # Sparse (light yellow)
+           "#ADFF2F",       # Moderate (yellow-green)
+           "#32CD32",       # Good vegetation (lime green)
+           "#228B22",       # Dense vegetation (forest green)
+           "#006400")       # Very dense (dark green)
+
+pal <- colorBin(palette = colors,
+                bins = breaks,
+                na.color = "transparent",
+                right = FALSE)
+
+mapview(ndvi_adv,
+        zcol = "layer",
+        at = breaks,
+        col.regions = colors,
+        layer.name = "NDVI",
+        alpha = 0.8)
+```
+
+```{r}
+# Use the reduced-resolution raster
+ndvi_values <- values(ndvi_adv)
+ndvi_values <- ndvi_values[!is.na(ndvi_values)]  # Remove NA
+
+# Define simplified NDVI categories
+ndvi_categories <- cut(ndvi_values,
+                       breaks = c(-Inf, 0, 0.2, 0.5, 0.9),
+                       labels = c("Water/Clouds/Snow (<0)",
+                                  "Bare Soil / Urban (0–0.2)",
+                                  "Sparse/Brown Vegetation (0.2–0.5)",
+                                  "Dense Healthy Vegetation (0.6–0.9)"),
+                       right = FALSE)
+
+# Create data frame with counts
+ndvi_df <- as.data.frame(table(ndvi_categories))
+colnames(ndvi_df) <- c("Category", "Count")
+
+# Calculate percentages
+ndvi_df <- ndvi_df %>%
+  mutate(Percentage = Count / sum(Count) * 100)
+
+# Plot
+ggplot(ndvi_df, aes(x = Category, y = Percentage, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "NDVI Category Percentages",
+       x = "NDVI Category",
+       y = "Percentage (%)") +
+  scale_fill_manual(values = c(
+    "#4A90E2",  # Water
+    "#CD853F",  # Bare soil / urban
+    "#F0E68C",  # Sparse vegetation
+    "#228B22"   # Dense vegetation
+  )) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
+  coord_flip()
 ```

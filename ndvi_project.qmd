@@ -60,8 +60,23 @@ NDVI = (NIR - Red) / (NIR + Red)
 
 ```{r}
 # Paths to your .jp2 files
-red_path <- here("data/kealakekua/T05QKB_20190908T210929_B04_10m.jp2")
-nir_path <- here("data/kealakekua/T05QKB_20190908T210929_B08_10m.jp2")
+red_path2019 <- here("data/kealakekua/2019/T04QHG_20190116T210921_B04_10m.jp2")
+nir_path2019 <- here("data/kealakekua/2019/T04QHG_20190116T210921_B08_10m.jp2")
+
+red_path2020 <- here("data/kealakekua/2020/T04QHG_20200225T210919_B04_10m.jp2")
+nir_path2020 <- here("data/kealakekua/2020/T04QHG_20200225T210919_B08_10m.jp2")
+
+red_path2021 <- here("data/kealakekua/2021/T04QHG_20211116T210919_B04_10m.jp2")
+nir_path2021 <- here("data/kealakekua/2021/T04QHG_20211116T210919_B08_10m.jp2")
+
+red_path2022 <- here("data/kealakekua/2022/T04QHG_20220301T210931_B04_10m.jp2")
+nir_path2022 <- here("data/kealakekua/2022/T04QHG_20220301T210931_B08_10m.jp2")
+
+red_path2023 <- here("data/kealakekua/2023/T04QHG_20230306T210921_B04_10m.jp2")
+nir_path2023 <- here("data/kealakekua/2023/T04QHG_20230306T210921_B08_10m.jp2")
+
+red_path2024 <- here("data/kealakekua/2024/T04QHG_20240214T210919_B04_10m.jp2")
+nir_path2024 <- here("data/kealakekua/2024/T04QHG_20240214T210919_B08_10m.jp2")
 ```
 
 ### These .jp2 files contain raster data
@@ -71,9 +86,24 @@ nir_path <- here("data/kealakekua/T05QKB_20190908T210929_B08_10m.jp2")
 -   The `terra` package helps us read raster data into R
 
 ```{r}
-# Read bands directly
-red <- rast(red_path)
-nir <- rast(nir_path)
+#Read bands directly
+red2019 <- rast(red_path2019)
+nir2019 <- rast(nir_path2019)
+
+red2020 <- rast(red_path2020)
+nir2020 <- rast(nir_path2020)
+
+red2021 <- rast(red_path2021)
+nir2021 <- rast(nir_path2021)
+
+red2022 <- rast(red_path2022)
+nir2022 <- rast(nir_path2022)
+
+red2023 <- rast(red_path2023)
+nir2023 <- rast(nir_path2023)
+
+red2024 <- rast(red_path2024)
+nir2024 <- rast(nir_path2024)
 ```
 
 ### Calculating NDVI
@@ -83,22 +113,46 @@ $$
 $$
 
 ```{r}
-ndvi <- (nir - red) / (nir + red)
+ndvi2019 <- (nir2019 - red2019) / (nir2019 + red2019)
+
+ndvi2020 <- (nir2020 - red2020) / (nir2020 + red2020)
+
+ndvi2021 <- (nir2021 - red2021) / (nir2021 + red2021)
+
+ndvi2022 <- (nir2022 - red2022) / (nir2022 + red2022)
+
+ndvi2023 <- (nir2023 - red2023) / (nir2023 + red2023)
+
+ndvi2024 <- (nir2024 - red2024) / (nir2024 + red2024)
 ```
 
 ### Plotting NDVI
 
 ```{r}
-plot(ndvi, main = "NDVI")
+plot(ndvi2019, main = "NDVI 2019")
+
+plot(ndvi2020, main = "NDVI 2020")
+
+plot(ndvi2021, main = "NDVI 2021")
+
+plot(ndvi2022, main = "NDVI 2022")
+
+plot(ndvi2023, main = "NDVI 2023")
+
+plot(ndvi2024, main = "NDVI 2024")
 ```
 
 ```{r}
-# Reduce resolution significantly (factor of 8-10 should work)
-ndvi_adv <- aggregate(ndvi, fact = 4, fun = mean)
+ndvi19 <- aggregate(ndvi2019, fact = 4, fun = mean)
+ndvi20 <- aggregate(ndvi2020, fact = 4, fun = mean)
+ndvi21 <- aggregate(ndvi2021, fact = 4, fun = mean)
+ndvi22 <- aggregate(ndvi2022, fact = 4, fun = mean)
+ndvi23 <- aggregate(ndvi2023, fact = 4, fun = mean)
+ndvi24 <- aggregate(ndvi2024, fact = 4, fun = mean)
 
 # Create custom breaks and colors
 breaks <- c(-1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 1)
-colors <- c("#4A90E2",      # Ocean (blue)
+colors <- c("#4A90E2",      # Ocean/Snow/Cloud (blue)
            "#CD853F",       # Bare soil/urban (tan)
            "#DEB887",       # Very sparse (light tan)
            "#F0E68C",       # Sparse (light yellow)
@@ -112,49 +166,298 @@ pal <- colorBin(palette = colors,
                 na.color = "transparent",
                 right = FALSE)
 
-mapview(ndvi_adv,
-        zcol = "layer",
-        at = breaks,
-        col.regions = colors,
-        layer.name = "NDVI",
+mapview(ndvi19, zcol = "layer", at = breaks, col.regions = colors, layer.name = "NDVI",
+        alpha = 0.8)
+mapview(ndvi20, zcol = "layer", at = breaks, col.regions = colors, layer.name = "NDVI",
+        alpha = 0.8)
+mapview(ndvi21, zcol = "layer", at = breaks, col.regions = colors, layer.name = "NDVI",
+        alpha = 0.8)
+mapview(ndvi22, zcol = "layer", at = breaks, col.regions = colors, layer.name = "NDVI",
+        alpha = 0.8)
+mapview(ndvi23, zcol = "layer", at = breaks, col.regions = colors, layer.name = "NDVI",
+        alpha = 0.8)
+mapview(ndvi24, zcol = "layer", at = breaks, col.regions = colors, layer.name = "NDVI",
         alpha = 0.8)
 ```
 
 ```{r}
 # Use the reduced-resolution raster
-ndvi_values <- values(ndvi_adv)
-ndvi_values <- ndvi_values[!is.na(ndvi_values)]  # Remove NA
+ndvi19_values <- values(ndvi19)
+ndvi19_values <- ndvi19_values[!is.na(ndvi19_values)]  # Remove NA
 
-# Define simplified NDVI categories
-ndvi_categories <- cut(ndvi_values,
-                       breaks = c(-Inf, 0, 0.2, 0.5, 0.9),
-                       labels = c("Water/Clouds/Snow (<0)",
-                                  "Bare Soil / Urban (0–0.2)",
-                                  "Sparse/Brown Vegetation (0.2–0.5)",
-                                  "Dense Healthy Vegetation (0.6–0.9)"),
-                       right = FALSE)
+# Define NDVI categories
+ndvi19_categories <- cut(ndvi19_values,
+                         breaks = c(-1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 1),
+                         labels = c("Water/Snow/Cloud (-1–0)",
+                                    "Bare Soil / Urban (0–0.1)",
+                                    "Very Sparse Vegetation (0.1–0.2)",
+                                    "Sparse Vegetation (0.2–0.3)",
+                                    "Moderate Vegetation (0.3–0.4)",
+                                    "Good Vegetation (0.4–0.5)",
+                                    "Dense Vegetation (0.5–0.6)",
+                                    "Very Dense Vegetation (0.6–1)"),
+                         right = FALSE)
+
 
 # Create data frame with counts
-ndvi_df <- as.data.frame(table(ndvi_categories))
-colnames(ndvi_df) <- c("Category", "Count")
+ndvi19_df <- as.data.frame(table(ndvi19_categories))
+colnames(ndvi19_df) <- c("Category", "Count")
 
 # Calculate percentages
-ndvi_df <- ndvi_df %>%
+ndvi19_df <- ndvi19_df %>%
   mutate(Percentage = Count / sum(Count) * 100)
 
 # Plot
-ggplot(ndvi_df, aes(x = Category, y = Percentage, fill = Category)) +
+ggplot(ndvi19_df, aes(x = Category, y = Percentage, fill = Category)) +
   geom_bar(stat = "identity") +
   labs(title = "NDVI Category Percentages",
        x = "NDVI Category",
        y = "Percentage (%)") +
   scale_fill_manual(values = c(
-    "#4A90E2",  # Water
-    "#CD853F",  # Bare soil / urban
-    "#F0E68C",  # Sparse vegetation
-    "#228B22"   # Dense vegetation
+    "#4A90E2",      # Ocean/Snow/Cloud (blue)
+           "#CD853F",       # Bare soil/urban (tan)
+           "#DEB887",       # Very sparse (light tan)
+           "#F0E68C",       # Sparse (light yellow)
+           "#ADFF2F",       # Moderate (yellow-green)
+           "#32CD32",       # Good vegetation (lime green)
+           "#228B22",       # Dense vegetation (forest green)
+           "#006400")       # Very dense (dark green)
+  ) +
+  theme_minimal() +
+  coord_flip()
+```
+
+```{r}
+# Use the reduced-resolution raster
+ndvi20_values <- values(ndvi20)
+ndvi20_values <- ndvi20_values[!is.na(ndvi20_values)]  # Remove NA
+
+# Define NDVI categories
+ndvi20_categories <- cut(ndvi20_values,
+                         breaks = c(-1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 1),
+                         labels = c("Water/Snow/Cloud (-1–0)",
+                                    "Bare Soil / Urban (0–0.1)",
+                                    "Very Sparse Vegetation (0.1–0.2)",
+                                    "Sparse Vegetation (0.2–0.3)",
+                                    "Moderate Vegetation (0.3–0.4)",
+                                    "Good Vegetation (0.4–0.5)",
+                                    "Dense Vegetation (0.5–0.6)",
+                                    "Very Dense Vegetation (0.6–1)"),
+                         right = FALSE)
+
+# Create data frame with counts
+ndvi20_df <- as.data.frame(table(ndvi20_categories))
+colnames(ndvi20_df) <- c("Category", "Count")
+
+# Calculate percentages
+ndvi20_df <- ndvi20_df %>%
+  mutate(Percentage = Count / sum(Count) * 100)
+
+# Plot
+ggplot(ndvi20_df, aes(x = Category, y = Percentage, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "NDVI Category Percentages",
+       x = "NDVI Category",
+       y = "Percentage (%)") +
+  scale_fill_manual(values = c(
+    "#4A90E2",  # Ocean/Snow/Cloud (blue)
+    "#CD853F",  # Bare soil/urban (tan)
+    "#DEB887",  # Very sparse (light tan)
+    "#F0E68C",  # Sparse (light yellow)
+    "#ADFF2F",  # Moderate (yellow-green)
+    "#32CD32",  # Good vegetation (lime green)
+    "#228B22",  # Dense vegetation (forest green)
+    "#006400"   # Very dense (dark green)
   )) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
   coord_flip()
+
+```
+
+```{r}
+# Use the reduced-resolution raster
+ndvi21_values <- values(ndvi21)
+ndvi21_values <- ndvi21_values[!is.na(ndvi21_values)]  # Remove NA
+
+# Define NDVI categories
+ndvi21_categories <- cut(ndvi21_values,
+                         breaks = c(-1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 1),
+                         labels = c("Water/Snow/Cloud (-1–0)",
+                                    "Bare Soil / Urban (0–0.1)",
+                                    "Very Sparse Vegetation (0.1–0.2)",
+                                    "Sparse Vegetation (0.2–0.3)",
+                                    "Moderate Vegetation (0.3–0.4)",
+                                    "Good Vegetation (0.4–0.5)",
+                                    "Dense Vegetation (0.5–0.6)",
+                                    "Very Dense Vegetation (0.6–1)"),
+                         right = FALSE)
+
+# Create data frame with counts
+ndvi21_df <- as.data.frame(table(ndvi21_categories))
+colnames(ndvi21_df) <- c("Category", "Count")
+
+# Calculate percentages
+ndvi21_df <- ndvi21_df %>%
+  mutate(Percentage = Count / sum(Count) * 100)
+
+# Plot
+ggplot(ndvi21_df, aes(x = Category, y = Percentage, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "NDVI Category Percentages",
+       x = "NDVI Category",
+       y = "Percentage (%)") +
+  scale_fill_manual(values = c(
+    "#4A90E2",  # Ocean/Snow/Cloud (blue)
+    "#CD853F",  # Bare soil/urban (tan)
+    "#DEB887",  # Very sparse (light tan)
+    "#F0E68C",  # Sparse (light yellow)
+    "#ADFF2F",  # Moderate (yellow-green)
+    "#32CD32",  # Good vegetation (lime green)
+    "#228B22",  # Dense vegetation (forest green)
+    "#006400"   # Very dense (dark green)
+  )) +
+  theme_minimal() +
+  coord_flip()
+
+```
+
+```{r}
+# Use the reduced-resolution raster
+ndvi22_values <- values(ndvi22)
+ndvi22_values <- ndvi22_values[!is.na(ndvi22_values)]  # Remove NA
+
+# Define NDVI categories
+ndvi22_categories <- cut(ndvi22_values,
+                         breaks = c(-1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 1),
+                         labels = c("Water/Snow/Cloud (-1–0)",
+                                    "Bare Soil / Urban (0–0.1)",
+                                    "Very Sparse Vegetation (0.1–0.2)",
+                                    "Sparse Vegetation (0.2–0.3)",
+                                    "Moderate Vegetation (0.3–0.4)",
+                                    "Good Vegetation (0.4–0.5)",
+                                    "Dense Vegetation (0.5–0.6)",
+                                    "Very Dense Vegetation (0.6–1)"),
+                         right = FALSE)
+
+# Create data frame with counts
+ndvi22_df <- as.data.frame(table(ndvi22_categories))
+colnames(ndvi22_df) <- c("Category", "Count")
+
+# Calculate percentages
+ndvi22_df <- ndvi22_df %>%
+  mutate(Percentage = Count / sum(Count) * 100)
+
+# Plot
+ggplot(ndvi22_df, aes(x = Category, y = Percentage, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "NDVI Category Percentages",
+       x = "NDVI Category",
+       y = "Percentage (%)") +
+  scale_fill_manual(values = c(
+    "#4A90E2",  # Ocean/Snow/Cloud (blue)
+    "#CD853F",  # Bare soil/urban (tan)
+    "#DEB887",  # Very sparse (light tan)
+    "#F0E68C",  # Sparse (light yellow)
+    "#ADFF2F",  # Moderate (yellow-green)
+    "#32CD32",  # Good vegetation (lime green)
+    "#228B22",  # Dense vegetation (forest green)
+    "#006400"   # Very dense (dark green)
+  )) +
+  theme_minimal() +
+  coord_flip()
+
+```
+
+```{r}
+# Use the reduced-resolution raster
+ndvi23_values <- values(ndvi23)
+ndvi23_values <- ndvi23_values[!is.na(ndvi23_values)]  # Remove NA
+
+# Define NDVI categories
+ndvi23_categories <- cut(ndvi23_values,
+                         breaks = c(-1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 1),
+                         labels = c("Water/Snow/Cloud (-1–0)",
+                                    "Bare Soil / Urban (0–0.1)",
+                                    "Very Sparse Vegetation (0.1–0.2)",
+                                    "Sparse Vegetation (0.2–0.3)",
+                                    "Moderate Vegetation (0.3–0.4)",
+                                    "Good Vegetation (0.4–0.5)",
+                                    "Dense Vegetation (0.5–0.6)",
+                                    "Very Dense Vegetation (0.6–1)"),
+                         right = FALSE)
+
+# Create data frame with counts
+ndvi23_df <- as.data.frame(table(ndvi23_categories))
+colnames(ndvi23_df) <- c("Category", "Count")
+
+# Calculate percentages
+ndvi23_df <- ndvi23_df %>%
+  mutate(Percentage = Count / sum(Count) * 100)
+
+# Plot
+ggplot(ndvi23_df, aes(x = Category, y = Percentage, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "NDVI Category Percentages",
+       x = "NDVI Category",
+       y = "Percentage (%)") +
+  scale_fill_manual(values = c(
+    "#4A90E2",  # Ocean/Snow/Cloud (blue)
+    "#CD853F",  # Bare soil/urban (tan)
+    "#DEB887",  # Very sparse (light tan)
+    "#F0E68C",  # Sparse (light yellow)
+    "#ADFF2F",  # Moderate (yellow-green)
+    "#32CD32",  # Good vegetation (lime green)
+    "#228B22",  # Dense vegetation (forest green)
+    "#006400"   # Very dense (dark green)
+  )) +
+  theme_minimal() +
+  coord_flip()
+
+```
+
+```{r}
+# Use the reduced-resolution raster
+ndvi24_values <- values(ndvi24)
+ndvi24_values <- ndvi24_values[!is.na(ndvi24_values)]  # Remove NA
+
+# Define NDVI categories
+ndvi24_categories <- cut(ndvi24_values,
+                         breaks = c(-1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 1),
+                         labels = c("Water/Snow/Cloud (-1–0)",
+                                    "Bare Soil / Urban (0–0.1)",
+                                    "Very Sparse Vegetation (0.1–0.2)",
+                                    "Sparse Vegetation (0.2–0.3)",
+                                    "Moderate Vegetation (0.3–0.4)",
+                                    "Good Vegetation (0.4–0.5)",
+                                    "Dense Vegetation (0.5–0.6)",
+                                    "Very Dense Vegetation (0.6–1)"),
+                         right = FALSE)
+
+# Create data frame with counts
+ndvi24_df <- as.data.frame(table(ndvi24_categories))
+colnames(ndvi24_df) <- c("Category", "Count")
+
+# Calculate percentages
+ndvi24_df <- ndvi24_df %>%
+  mutate(Percentage = Count / sum(Count) * 100)
+
+# Plot
+ggplot(ndvi24_df, aes(x = Category, y = Percentage, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "NDVI Category Percentages",
+       x = "NDVI Category",
+       y = "Percentage (%)") +
+  scale_fill_manual(values = c(
+    "#4A90E2",  # Ocean/Snow/Cloud (blue)
+    "#CD853F",  # Bare soil/urban (tan)
+    "#DEB887",  # Very sparse (light tan)
+    "#F0E68C",  # Sparse (light yellow)
+    "#ADFF2F",  # Moderate (yellow-green)
+    "#32CD32",  # Good vegetation (lime green)
+    "#228B22",  # Dense vegetation (forest green)
+    "#006400"   # Very dense (dark green)
+  )) +
+  theme_minimal() +
+  coord_flip()
+
 ```

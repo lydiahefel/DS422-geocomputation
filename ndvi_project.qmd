@@ -210,7 +210,7 @@ ndvi19_df <- ndvi19_df %>%
 # Plot
 ggplot(ndvi19_df, aes(x = Category, y = Percentage, fill = Category)) +
   geom_bar(stat = "identity") +
-  labs(title = "NDVI Category Percentages",
+  labs(title = "NDVI Category Percentages - 2019",
        x = "NDVI Category",
        y = "Percentage (%)") +
   scale_fill_manual(values = c(
@@ -256,7 +256,7 @@ ndvi20_df <- ndvi20_df %>%
 # Plot
 ggplot(ndvi20_df, aes(x = Category, y = Percentage, fill = Category)) +
   geom_bar(stat = "identity") +
-  labs(title = "NDVI Category Percentages",
+  labs(title = "NDVI Category Percentages - 2020",
        x = "NDVI Category",
        y = "Percentage (%)") +
   scale_fill_manual(values = c(
@@ -303,7 +303,7 @@ ndvi21_df <- ndvi21_df %>%
 # Plot
 ggplot(ndvi21_df, aes(x = Category, y = Percentage, fill = Category)) +
   geom_bar(stat = "identity") +
-  labs(title = "NDVI Category Percentages",
+  labs(title = "NDVI Category Percentages - 2021",
        x = "NDVI Category",
        y = "Percentage (%)") +
   scale_fill_manual(values = c(
@@ -350,7 +350,7 @@ ndvi22_df <- ndvi22_df %>%
 # Plot
 ggplot(ndvi22_df, aes(x = Category, y = Percentage, fill = Category)) +
   geom_bar(stat = "identity") +
-  labs(title = "NDVI Category Percentages",
+  labs(title = "NDVI Category Percentages - 2022",
        x = "NDVI Category",
        y = "Percentage (%)") +
   scale_fill_manual(values = c(
@@ -397,7 +397,7 @@ ndvi23_df <- ndvi23_df %>%
 # Plot
 ggplot(ndvi23_df, aes(x = Category, y = Percentage, fill = Category)) +
   geom_bar(stat = "identity") +
-  labs(title = "NDVI Category Percentages",
+  labs(title = "NDVI Category Percentages - 2023",
        x = "NDVI Category",
        y = "Percentage (%)") +
   scale_fill_manual(values = c(
@@ -444,7 +444,7 @@ ndvi24_df <- ndvi24_df %>%
 # Plot
 ggplot(ndvi24_df, aes(x = Category, y = Percentage, fill = Category)) +
   geom_bar(stat = "identity") +
-  labs(title = "NDVI Category Percentages",
+  labs(title = "NDVI Category Percentages - 2024",
        x = "NDVI Category",
        y = "Percentage (%)") +
   scale_fill_manual(values = c(

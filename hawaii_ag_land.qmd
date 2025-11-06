@@ -1,0 +1,114 @@
+---
+title: "Hawaiʻi Agricultural Land Use Change"
+format: html
+editor: visual
+---
+
+# Which specific crop categories **increased or decreased** the most?
+
+## **Load in Libraries**
+
+```{r}
+library(mapview)
+library(mapgl)
+library(tmap)
+library(leaflet)
+library(ggplot2)
+library(dplyr)
+library(tidycensus)
+library(tidyr)
+library(readr)
+library(viridis)
+library(randomForest)
+library(treeshap)
+library(sf)
+library(RColorBrewer)
+library(classInt)
+library(ggalluvial)
+library(here)
+library(leafsync)
+```
+
+## Load in Data
+
+```{r}
+data15 <- st_read(here("data", "ag_data", "Agricultural_Land_Use_-_2015_Baseline.geojson"))
+  
+data20 <- st_read(here("data", "ag_data", "Agricultural_Land_Use_-_2020_Update.geojson"))
+```
+
+## Summarize Data
+
+```{r}
+data15_sum <- data15 %>%
+  st_set_geometry(NULL) %>%
+  group_by(cropcatego) %>%
+  summarise(crops15 = sum(acreage, na.rm = TRUE))
+
+data20_sum <- data20 %>%
+  st_set_geometry(NULL) %>%
+  group_by(crops_2020) %>%
+  summarise(crops20 = sum(acreage, na.rm = TRUE))
+```
+
+## Join Data
+
+```{r}
+join_data <- data15_sum %>%
+  full_join(data20_sum, by = c("cropcatego" = "crops_2020")) %>%
+  replace_na(list(crops15 = 0, crops20 = 0)) %>%
+  mutate(change = crops20 - crops15) %>%
+  arrange(desc(change))
+
+new_data <- data20 %>%
+  left_join(st_drop_geometry(join_data),
+            by = c("crops_2020" = "cropcatego"))
+```
+
+## Bar Chart of Acreage Comparison By Crop
+
+```{r}
+ggplot(join_data) +
+  geom_col(aes(x = cropcatego, y = crops15, fill = "2015"), 
+           width = 0.4, position = position_nudge(x = -0.2)) +
+  geom_col(aes(x = cropcatego, y = crops20, fill = "2020"), 
+           width = 0.4, position = position_nudge(x = 0.2)) +
+  coord_flip() +
+  scale_fill_manual(values = c("2015" = "red", "2020" = "darkgreen")) +
+  labs(title = "Crop Acreage Comparison: 2015 vs 2020",
+       x = "Crop Category", y = "Total Acreage", fill = "Year") +
+  theme_minimal()
+```
+
+## Map Sync of Crop Categories
+
+```{r}
+mapviewOptions(basemaps = "CartoDB.Positron")
+
+map15 <- mapview(data15, zcol = "cropcatego", alpha = 0.5, legend = TRUE, 
+                 layer.name = "2015 Crop Variety")
+
+map20 <- mapview(data20, zcol = "crops_2020", alpha = 0.5, legend = TRUE, 
+                 layer.name = "2020 Crop Variety")
+
+sync(map15, map20)
+```
+
+## Bar Chart of Crop Acreage Change
+
+```{r}
+ggplot(join_data, aes(x = reorder(cropcatego, change), y = change, fill = change)) +
+  geom_col() +
+  coord_flip() +
+  scale_fill_gradient2(low = "red", mid = "white", high = "darkgreen", midpoint = 0) +
+  labs(title = "Change in Crop Area (2015–2020)",
+       x = "Crop Category", y = "Change (Area)") +
+  theme_minimal()
+```
+
+## Map of Crop Acreage Change
+
+```{r}
+mapview(new_data, zcol = "change", alpha = 0.5, legend = TRUE, 
+        layer.name = "Change in Crop Acreage (2015–2020)", popup = new_data$crops_2020)
+```
